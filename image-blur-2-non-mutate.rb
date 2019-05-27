@@ -1,13 +1,3 @@
-# big_array = [
-#   [2, 25, 123, 1000],
-#   [1, 3,    5,        7]
-# ]
-
-# print big_array[0][1] # Row, Column (RC cola)
-# puts
-
-
-# Goal: define a class (called Image) that prints an array when we call output_image
 class Image
 
   def initialize(matrix)
@@ -25,12 +15,11 @@ class Image
     end # end looping over row
   end
 
-
-  def blur(row_index, col_index)
-    @my_matrix[row_index -1][col_index] = 1 unless row_index == 0
-    @my_matrix[row_index +1][col_index] = 1 unless row_index >= @row_length-1
-    @my_matrix[row_index][col_index +1] = 1 unless col_index >= @col_length-1
-    @my_matrix[row_index][col_index -1] = 1 unless col_index == 0
+  def blur(row_index, col_index, matrix)
+    matrix[row_index -1][col_index] = 1 unless row_index == 0
+    matrix[row_index +1][col_index] = 1 unless row_index >= @row_length-1
+    matrix[row_index][col_index +1] = 1 unless col_index >= @col_length-1
+    matrix[row_index][col_index -1] = 1 unless col_index == 0
   end
 
   def search()
@@ -48,10 +37,13 @@ class Image
 
   def apply_blur()
     one_coords = search()
+    blurred_matrix = Marshal.load(Marshal.dump(@my_matrix))
 
     one_coords.each do |x, y|
-      blur(x, y)
+      blur(x, y, blurred_matrix)
     end
+
+    return Image.new(blurred_matrix)
   end
 end
 
@@ -61,19 +53,15 @@ image = Image.new([
   [0, 0, 0, 1],
   [0, 0, 0, 0]
 ])
-image.output_image
+
+image.output_image()
 puts "///////"
-image.apply_blur
-image.output_image
 
+# applying blur
+blurred_image = image.apply_blur()
 
-#### end of blur #1 #####
+puts "original image"
+image.output_image()
 
-
-### start of blur 2 ####
-# image.transform()
-## image.output_image()
-
-
-
-
+puts "blurred image"
+blurred_image.output_image()
